@@ -4,7 +4,7 @@ const connection = require('../config/db');
 class PortManager {
   getActivePort() {
     return new Promise((resolve, reject) => {
-      connection.query(`SELECT path FROM ports LIMIT 1`, (error, results) => {
+      connection.query(`SELECT path FROM ports WHERE status = 1 LIMIT 1`, (error, results) => {
         if (error) {
           console.error('Error executing query:', error);
           return reject(error);
