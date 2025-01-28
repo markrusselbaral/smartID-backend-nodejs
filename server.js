@@ -7,26 +7,22 @@ const portManager = new PortManager();
 const smsQueue = new SmsQueue();
 
 let modem = serialportgsm.Modem();
-const wss = new WebSocket.Server({ port: 8080 });
-
-
-wss.on('connection', (ws) => {
-    console.log('Client connected');
-    
-    ws.on('message', (message) => {
-        processSendingMessage()
-    });
-
-    ws.send('Connected to WebSocket Server');
-});
-
+const wss = new WebSocket.Server({ port: 8080, host: '0.0.0.0' });
 
 
 
 let isModemInitialized = false; // Track modem initialization state
 let isPortOpen = false; // Track port open state
+let isProcessing = false; // Flag to indicate if the function is running
 
 const processSendingMessage = async () => {
+    if (isProcessing) {
+        console.log("Waiting for the current execution to finish...");
+        return;
+    }
+    console.log("Processing start.");
+    isProcessing = true;
+
     try {
         const portId = await portManager.getActivePort();
         const smsInfo = await smsQueue.getSmsQueue();
@@ -37,12 +33,15 @@ const processSendingMessage = async () => {
             return;
         }
 
-        // Send SMS
         sendSMS(portId, smsInfo.parent_contact, smsInfo.first_name, smsInfo.last_name, smsInfo.sq_id);
     } catch (error) {
         console.error("Error:", error);
+    } finally {
+        console.log("Processing complete.");
+        isProcessing = false; // Reset the flag after processing is complete
     }
 };
+
 
 const sendSMS = (portId, parent_contact, first_name, last_name, sq_id) => {
     // Open the port only if it's not already open
@@ -88,6 +87,19 @@ const sendSMSMessage = (parent_contact, first_name, last_name, sq_id) => {
     });
 };
 
-// Start the process
-// processSendingMessage();
+
+
+wss.on('connection', (ws) => {
+    console.log('Client connected');
+    
+    ws.on('message', (message) => {
+        // processSendingMessage()
+        if(!isProcessing){
+            processSendingMessage();
+        }
+        console.log(`Received message => ${message}`);
+    });
+
+    ws.send('Connected to WebSocket Server');
+});
 

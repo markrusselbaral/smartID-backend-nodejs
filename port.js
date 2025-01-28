@@ -1,21 +1,12 @@
 // Import required packages
-const Pusher = require('pusher');
 const PusherClient = require('pusher-js');
 const serialportgsm = require('serialport-gsm');
 const connection = require('./config/db');
-
-// Initialize Pusher for triggering events
-const pusher = new Pusher({
-  appId: '1927653',
-  key: '857d695ff6e8286c36e6',
-  secret: '92ce9aa2c7754ee9198d',
-  cluster: 'ap1',
-  useTLS: true,
-});
+require('dotenv').config();
 
 // Initialize Pusher for subscribing to events
-const pusherClient = new PusherClient('857d695ff6e8286c36e6', {
-  cluster: 'ap1',
+const pusherClient = new PusherClient(process.env.PUSHER_APP_ID, {
+  cluster: process.env.PUSHER_APP_CLUSTER,
   encrypted: true,
 });
 
@@ -26,8 +17,6 @@ channel.bind('start-processing', (data) => {
   console.log('Received start-processing event from Pusher:', data);
   processSerialPorts();
 });
-
-
 
 
 
