@@ -96,5 +96,3 @@ wss.on('connection', (ws) => {
 
     ws.send('Connected to WebSocket Server');
 });
-
-processSendingMessage();
