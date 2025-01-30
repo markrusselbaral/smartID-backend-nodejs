@@ -1,10 +1,10 @@
 const WebSocket = require('ws');
 let serialportgsm = require("serialport-gsm");
-const PortManager = require('./helpers/portManager');
-const SmsQueue = require('./helpers/smsQueue');
+const SmsService = require('./services/smsService');
+const PortLists = require('./helpers/portLists');
 
-const portManager = new PortManager();
-const smsQueue = new SmsQueue();
+const smsService = new SmsService();
+const portLists = new PortLists();
 
 let modem = serialportgsm.Modem();
 const wss = new WebSocket.Server({ port: 8080, host: '0.0.0.0' });
@@ -24,8 +24,8 @@ const processSendingMessage = async () => {
     isProcessing = true;
 
     try {
-        const portId = await portManager.getActivePort();
-        const smsInfo = await smsQueue.getSmsQueue();
+        const portId = await portLists.getActivePort();
+        const smsInfo = await smsService.smsQueue();
 
         // Check if SMS info is available
         if (!smsInfo) {
@@ -46,7 +46,7 @@ const processSendingMessage = async () => {
 const sendSMS = (portId, parent_contact, first_name, last_name, sq_id) => {
     // Open the port only if it's not already open
     if (!isPortOpen) {
-        modem.open(portId, portManager.getPortOptions(), (error) => {
+        modem.open(portId, portLists.getPortOptions(), (error) => {
             if (error) {
                 console.error("Error opening modem port:", error);
                 return;
@@ -78,13 +78,6 @@ const sendSMSMessage = (parent_contact, first_name, last_name, sq_id) => {
     modem.sendSMS(parent_contact, `${first_name} ${last_name}`, false, (data) => {
         console.log("SMS sent successfully:", data);
         processSendingMessage(); // Process the next SMS
-
-        // Update the SMS queue after sending the SMS
-        smsQueue.updateSmsQueueStatusToSent(sq_id).then(() => {
-            console.log(`SMS queue updated for ID: ${sq_id}`);
-        }).catch((error) => {
-            console.error("Error updating SMS queue:", error);
-        });
     });
 };
 
@@ -94,7 +87,7 @@ wss.on('connection', (ws) => {
     console.log('Client connected');
     
     ws.on('message', (message) => {
-        // processSendingMessage()
+
         if(!isProcessing){
             processSendingMessage();
         }
@@ -104,3 +97,4 @@ wss.on('connection', (ws) => {
     ws.send('Connected to WebSocket Server');
 });
 
+processSendingMessage();
