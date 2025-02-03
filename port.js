@@ -20,4 +20,6 @@ channel2.bind('start-processing', (data) => {
   portService.updatePortActiveStatus(data.portId, data.kioskId);
 });
 
+
+console.log('port.js is running');
   

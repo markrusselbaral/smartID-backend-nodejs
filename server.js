@@ -83,6 +83,29 @@ const sendSMSMessage = (parent_contact, first_name, last_name, sq_id) => {
 
 
 
+
+const startUp = async () => { 
+    const portId = await portLists.getActivePort();
+    modem.open(portId, portLists.getPortOptions(), (error) => {
+        if (error) {
+            console.error("Error opening modem port:", error);
+            return;
+        }
+        console.log("Modem port opened successfully.");
+        isPortOpen = true; // Set the flag to indicate the port is open
+    });
+
+    modem.initializeModem(() => {
+        console.log("Modem is initialized.");
+        isModemInitialized = true; // Set the flag
+    });
+    
+}
+
+startUp();
+
+
+
 wss.on('connection', (ws) => {
     console.log('Client connected');
     

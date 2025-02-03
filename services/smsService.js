@@ -5,7 +5,7 @@ class SmsService {
  
   async smsQueue() {
     try {
-        const response = await axios.get(`${process.env.BASE_URL}/get-sms-queue`);
+        const response = await axios.get(`${process.env.NODE_BASE_URL}/get-sms-queue`);
         return response.data.smsQueue;
     } catch (error) {
       console.error('There was an error!', error);

@@ -1,5 +1,7 @@
 const serialportgsm = require('serialport-gsm');
 const axios = require('axios');
+const fs = require('fs').promises;
+const path = require('path');
 require('dotenv').config();
 
 class PortList {
@@ -33,13 +35,27 @@ class PortList {
     }
   }
 
+  
   async getActivePort() {
     try {
-        const kioskId = 1;
-        const response = await axios.get(`${process.env.BASE_URL}/get-active-port/${kioskId}`);
-        return response.data.activePort.path;
+        // Correct file path (move up one level to access config/)
+        const filePath = path.join(__dirname, '..', 'config', 'port.txt');
+
+        // Read file contents
+        const fileContent = await fs.readFile(filePath, 'utf8');
+
+        // Extract the PORT value using regex
+        const match = fileContent.match(/^PORT=(.*)$/m);
+        
+        if (match && match[1]) {
+            console.log(`Active Port: ${match[1]}`);
+            return match[1]; // Return the port value
+        } else {
+            throw new Error('PORT value not found in port.txt');
+        }
     } catch (error) {
-      console.error('There was an error!', error);
+        console.error('Error reading the port file:', error);
+        return null;
     }
   }
 
