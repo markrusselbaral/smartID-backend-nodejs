@@ -21,6 +21,7 @@ class PortService {
       try {
           const response = await axios.get(`${baseUrl.baseUrl()}/turn-on-port/${portId}/${kioskId}`);
           const activePort = response.data.portPath;
+          console.log(response.data);
 
           if (!activePort) {
               console.error("No active port received!");
