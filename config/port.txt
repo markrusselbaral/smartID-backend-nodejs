@@ -1,1 +1,1 @@
-PORT=/dev/ttyS3
+PORT=/dev/ttyS1
