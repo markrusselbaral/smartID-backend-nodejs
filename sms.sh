@@ -9,4 +9,5 @@ export NVM_DIR="$HOME/.nvm"
 nvm use v20.11.1
 
 # Run the Node.js script
-node /home/markrussel/smartID-backend-config/smartID-backend-nodejs
+node /home/markrusselbaral/smartID-backend-config/smartID-backend-nodejs/port.js
+    
