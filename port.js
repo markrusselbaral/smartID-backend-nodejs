@@ -22,4 +22,9 @@ channel2.bind('start-processing', (data) => {
 
 
 console.log('port.js is running');
+
+
+
+
+
   
