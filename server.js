@@ -82,6 +82,12 @@ const sendSMSMessage = (parent_contact, first_name, last_name, sq_id) => {
 };
 
 
+modem.on('onSendingMessage', (result) => {
+    console.log('onSendingMessage',result)
+});
+
+
+
 
 
 const startUp = async () => { 
