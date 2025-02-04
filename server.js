@@ -77,8 +77,10 @@ const initializeAndSendSMS = (portId, parent_contact, first_name, last_name, sq_
 const sendSMSMessage = (parent_contact, first_name, last_name, sq_id) => {
     modem.sendSMS(parent_contact, `${first_name} ${last_name}`, false, (data) => {
         console.log("SMS sent successfully:", data);
-        // processSendingMessage(); // Process the next SMS
-        // Message Successfully Sent
+        if(data.data.response == 'Message Successfully Sent') {
+            updateSmsQueueStatus();
+            processSendingMessage();
+        }
     });
 };
 

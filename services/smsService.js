@@ -14,6 +14,15 @@ class SmsService {
       console.error('There was an error!', error);
     }
   }
+
+  async updateSmsQueueStatus() {
+    try {
+        const response = await axios.get(`${baseUrl.baseUrl()}/update-sms-status`);
+        return response.message;
+    } catch (error) {
+      console.error('There was an error!', error);
+    }
+  }
 }
 
 
