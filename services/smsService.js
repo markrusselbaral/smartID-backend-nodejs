@@ -15,14 +15,17 @@ class SmsService {
     }
   }
 
-  async updateSmsQueueStatus() {
+  async updateSmsQueueStatus(callback) {
     try {
-        const response = await axios.get(`${baseUrl.baseUrl()}/update-sms-status`);
-        return response.message;
-    } catch (error) {
-      console.error('There was an error!', error);
-    }
+          await axios.get(`${baseUrl.baseUrl()}/update-sms-status`);
+          if (callback) callback(); // Call the callback after completion
+      } catch (error) {
+          console.error('There was an error!', error);
+          if (callback) callback();
+      }
   }
+
+
 }
 
 
