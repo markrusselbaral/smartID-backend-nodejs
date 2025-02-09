@@ -12,7 +12,6 @@ const downloadAndImportSQL = async () => {
     const folderPath = path.join(__dirname, 'sql'); // SQL folder
     const filePath = path.join(folderPath, 'students_backup.sql'); // Full file path
 
-    console.log(url)
     try {
         // Ensure the sql folder exists
         if (!fs.existsSync(folderPath)) {
